@@ -1,0 +1,14 @@
+.container
+  %form.dropzone#dropzone{:action => "/photos"}
+
+  %h1 testing....
+  .images-holder
+    = image_tag "/images/test/image1.jpg"
+    = image_tag "/images/test/image2.jpg"
+    = image_tag "/images/test/composed_image.jpg"
+
+:javascript
+  Dropzone.options.dropzone = {
+    paramName: "photo",
+    uploadMultiple: true
+  }

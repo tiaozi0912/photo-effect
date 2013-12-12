@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= @title || 'Halface' %></title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body class="<%= @body_class || '' %>">
+  <% flash.each do |key, value| %>
+    <div class="flash-container">
+      <h3 class="flash alert <%= key %>"><%= value %></h3>
+    </div>
+  <% end %>
+  <%= yield %>
+
+</body>
+</html>

@@ -5,7 +5,7 @@ Me::Application.routes.draw do
     end
   end
 
-  root :to => 'photos#home'
+  root :to => 'photos#merry_christmas'
   resources :users
   resources :user_sessions, :only => [:create]
   match '/signin' => 'user_sessions#new'

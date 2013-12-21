@@ -11,7 +11,7 @@ class Photo < ActiveRecord::Base
                     :url=>"/:id/created_at_:created_at/:style.jpg",
                     :path => '/app/public/photos:url'
 
-  validates_attachment :avatar, :presence => true, :size => { :in => 0..1000.kilobytes }
+  #validates_attachment :avatar, :presence => true, :size => { :in => 0..1000.kilobytes }
 
   Paperclip.interpolates :created_at do |attachment, style|
     attachment.instance.created_at

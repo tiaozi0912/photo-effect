@@ -14,3 +14,7 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require dropzone
+//= require three.min
+//= require tween.min
+//= require TrackballControls
+//= require CSS3DRenderer

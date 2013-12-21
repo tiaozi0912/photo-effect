@@ -11,6 +11,10 @@ class PhotosController < ApplicationController
     #@image.write("#{images_root}/test/composed_image.jpg")
 	end
 
+	def merry_christmas
+		@body_class = 'merry-christmas'
+	end
+
 	def create
 		flash['alert-success'] = 'post'
 		redirect_to :back

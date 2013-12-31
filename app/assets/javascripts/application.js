@@ -12,6 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require angular.min
+//= require Underscore
 //= require bootstrap
 //= require dropzone
 //= require three.min

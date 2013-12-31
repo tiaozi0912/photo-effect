@@ -1,9 +1,17 @@
-#container
-#menu
-  %button#table TABLE
-  %button#sphere SPHERE
-  %button#helix HELIX
-  %button#grid GRID
+%div{:"ng-app" => "app", :"ng-controller" => "ctrl"}
+  #container
+  .letter
+    %article
+      %p Tang:
+      %p Merry Christmas && Happy New Year !
+      %p To me, you are perfect.
+      %p And my wasted heart will love you
+      %p 
+        %span.rose 1314
+    %a{:href => "#", :"ng-click" => "start()"}
+      See something cool
+
+
 
 
 = javascript_include_tag 'merry-christmas'

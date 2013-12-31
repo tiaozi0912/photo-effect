@@ -1,153 +1,242 @@
-var count = 16,
-    table = [];
-for ( var i = 0; i < count; i++ ) {
-  var base = 'images/Christmas/Tang/';
-  table.push( base + (i+1).toString() + '.jpg');
-}
+(function() {
+  var app = angular.module('app', []);
+  app.controller('ctrl', ['$scope', function($scope) {
+    var count = 28,
+      table = [];
+    for ( var i = 0; i < count; i++ ) {
+      var base = 'images/Christmas/Tang/';
+      table.push( base + (i+1).toString() + '.jpg');
+    }
 
-var camera, scene, renderer;
-var controls;
+    var camera, scene, renderer;
+    var controls;
 
-var objects = [];
-var targets = { table: [], sphere: [], helix: [], grid: [] };
+    var objects = [];
+    var targets = { table: [], sphere: [], helix: [], grid: [] };
 
-init();
-animate();
+    function init() {
+      camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 5000 );
+      camera.position.z = 1500;
 
-function init() {
+      scene = new THREE.Scene();
 
-  camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 5000 );
-  camera.position.z = 1500;
+      // table
+      var initDuration = 5000,
+          cols = Math.ceil(Math.sqrt(count)),
+          bound = 1500,
+          ratio = 0.7,
+          offsetY = 250,
+          gutterX = bound * 2 / (cols - 1),
+          gutterY = ratio * bound * 2 / (cols - 1);
 
-  scene = new THREE.Scene();
+      for ( var i = 0; i < table.length; i ++ ) {
 
-  // table
+        var element = document.createElement('div'),
+            img = document.createElement('img'),
+            row = parseInt(i / cols),
+            col = i - row * cols;
+        
+        element.className = 'img-container';
+        element.setAttribute('id', i);
+        img.src = table[i];
 
-  for ( var i = 0; i < table.length; i ++ ) {
+        element.appendChild(img);
 
-    var element = document.createElement('div'),
-        img = document.createElement('img');
+        var object = new THREE.CSS3DObject( element );
+        object.position.x = Math.random() * 4000 - 2000;
+        object.position.y = Math.random() * 4000 - 2000;
+        object.position.z = Math.random() * 4000 - 2000;
 
-    img.src = table[i];
+        scene.add( object );
 
-    element.appendChild(img);
+        objects.push( object );
 
-    var object = new THREE.CSS3DObject( element );
-    object.position.x = Math.random() * 4000 - 2000;
-    object.position.y = Math.random() * 4000 - 2000;
-    object.position.z = Math.random() * 4000 - 2000;
-    scene.add( object );
+        //set the target
+        var tObject = new THREE.Object3D();
+        tObject.position.x = gutterX * col - bound;
+        tObject.position.y = gutterY * row - ratio * bound + offsetY;
+        tObject.position.z = -500;
 
-    objects.push( object );
+        targets.table.push( tObject );
 
-    //
+      }
 
-    var object = new THREE.Object3D();
-    object.position.x = Math.random() * 4000 - 2000;
-    object.position.y = Math.random() * 4000 - 2000;
+      renderer = new THREE.CSS3DRenderer();
 
-    targets.table.push( object );
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      renderer.domElement.style.position = 'absolute';
+      document.getElementById( 'container' ).appendChild( renderer.domElement );
 
-  }
+      //
 
-  renderer = new THREE.CSS3DRenderer();
+      controls = new THREE.TrackballControls( camera, renderer.domElement );
+      controls.rotateSpeed = 0.5;
+      controls.addEventListener( 'change', render );
 
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  renderer.domElement.style.position = 'absolute';
-  document.getElementById( 'container' ).appendChild( renderer.domElement );
+      transform( targets.table, initDuration );
+      //
 
-  //
+      window.addEventListener( 'resize', onWindowResize, false );
 
-  controls = new THREE.TrackballControls( camera, renderer.domElement );
-  controls.rotateSpeed = 0.5;
-  controls.addEventListener( 'change', render );
+    }
 
-  var button = document.getElementById( 'table' );
-  button.addEventListener( 'click', function ( event ) {
+    function rerender(duration) {
+      new TWEEN.Tween( this )
+        .to( {}, duration * 2 )
+        .onUpdate( render )
+        .start();
+    }
 
-    transform( targets.table, 2000 );
+    function transform( targets, duration ) {
 
-  }, false );
+      TWEEN.removeAll();
 
-  var button = document.getElementById( 'sphere' );
-  button.addEventListener( 'click', function ( event ) {
+      for ( var i = 0; i < objects.length; i ++ ) {
 
-    transform( targets.sphere, 2000 );
+        var object = objects[ i ];
+        var target = targets[ i ];
 
-  }, false );
+        new TWEEN.Tween( object.position )
+          .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+          .easing( TWEEN.Easing.Exponential.InOut )
+          .start();
 
-  var button = document.getElementById( 'helix' );
-  button.addEventListener( 'click', function ( event ) {
+        new TWEEN.Tween( object.rotation )
+          .to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+          .easing( TWEEN.Easing.Exponential.InOut )
+          .start();
 
-    transform( targets.helix, 2000 );
+      }
 
-  }, false );
+      rerender(duration);
+    }
 
-  var button = document.getElementById( 'grid' );
-  button.addEventListener( 'click', function ( event ) {
+    function onWindowResize() {
 
-    transform( targets.grid, 2000 );
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
 
-  }, false );
+      renderer.setSize( window.innerWidth, window.innerHeight );
 
-  transform( targets.table, 5000 );
+      render();
 
-  //
+    }
 
-  window.addEventListener( 'resize', onWindowResize, false );
+    function animate() {
 
-}
+      requestAnimationFrame( animate );
 
-function transform( targets, duration ) {
+      TWEEN.update();
+      controls.update();
 
-  TWEEN.removeAll();
+    }
 
-  for ( var i = 0; i < objects.length; i ++ ) {
+    function render() {
 
-    var object = objects[ i ];
-    var target = targets[ i ];
+      renderer.render( scene, camera );
 
-    new TWEEN.Tween( object.position )
-      .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
-      .easing( TWEEN.Easing.Exponential.InOut )
-      .start();
+    }
 
-    new TWEEN.Tween( object.rotation )
-      .to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
-      .easing( TWEEN.Easing.Exponential.InOut )
-      .start();
+    function float(duration) {
+      setInterval(function() {
+        _.each(objects, function(obj) {
+          var target = {
+            x: obj.position.x + Math.random() * 40 - 20,
+            y: obj.position.y + Math.random() * 40 - 20,
+            z: obj.position.z
+          };
+          new TWEEN.Tween( obj.position )
+            .to( { x: target.x, y: target.y, z: target.z }, Math.random() * duration + duration )
+            .easing( TWEEN.Easing.Exponential.InOut )
+            .start();
+        });
+        rerender(duration);
+      }, duration);
+    }
 
-  }
+    function setLetterPosition($letter) {
+      var mY = 0.33 * ($(window).height() - $letter.outerHeight()),
+          mX = ($(window).width() - $letter.outerWidth()) / 2;
 
-  new TWEEN.Tween( this )
-    .to( {}, duration * 2 )
-    .onUpdate( render )
-    .start();
+      $letter.css({
+        top: mY,
+        left: mX
+      });
+    }
 
-}
+    setLetterPosition($('.letter'));
 
-function onWindowResize() {
+    //listen to hover the image container
+    var originPosition, selected;
+    $('#container').on('click', '.img-container', function(e) {
+      var index = parseInt($(e.currentTarget).attr('id')),
+          duration = 400, clear;
+      
+      //dismiss the current highlight image and return to the previous position
+      if (selected) {
+        new TWEEN.Tween( $scope.selectedObj.position )
+          .to(originPosition, Math.random() * duration + duration )
+          .easing( TWEEN.Easing.Exponential.InOut )
+          .start();
 
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+        if ($scope.selectedObj.id === objects[index].id) {
+          clear = true;
+        }
+      }
+      
+      //highlight the image and store the origin position
+      if (!selected || $scope.selectedObj.id !== objects[index].id) {
+        $scope.selectedObj = objects[index];
+        selected = true;
+        originPosition = {
+          x: $scope.selectedObj.position.x,
+          y: $scope.selectedObj.position.y,
+          z: $scope.selectedObj.position.z
+        };
 
-  renderer.setSize( window.innerWidth, window.innerHeight );
+        new TWEEN.Tween( $scope.selectedObj.position )
+            .to( {x: 0, y: 0, z: 900}, Math.random() * duration + duration )
+            .easing( TWEEN.Easing.Exponential.InOut )
+            .start(); 
+      }
 
-  render();
+      rerender(duration);
 
-}
+      if (clear) {
+        selected = false;
+      }
+    });
 
-function animate() {
+    $scope.sentences = [
+      'Merry Christmas && Happy New Year !',
+      'To me, you are perfect.',
+      'And My wasted heart will love you',
+      '1314 ~ '
+    ]
 
-  requestAnimationFrame( animate );
+    $scope.start = function() {
+      $('.letter').fadeOut(400, function() {
+        init();
+        animate();
+      });
+    }
 
-  TWEEN.update();
-  controls.update();
+    $scope.changePosition = function(val, dimension) {
+      var duration = 400,
+          targetPosition = {
+            x: $scope.selectedObj.position.x,
+            y: $scope.selectedObj.position.y,
+            z: $scope.selectedObj.position.z
+          };
 
-}
+      targetPosition[dimension] = val;
 
-function render() {
+      new TWEEN.Tween( $scope.selectedObj.position )
+          .to( targetPosition, Math.random() * duration + duration )
+          .easing( TWEEN.Easing.Exponential.InOut )
+          .start();
 
-  renderer.render( scene, camera );
-
-}
+      rerender(duration);
+    }
+  }]);
+})()

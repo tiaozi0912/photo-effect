@@ -5,13 +5,14 @@
         %a{:href => "#", :"ng-click" => "showList($event)"} 棠棠已经领取了：${{total | number: 0}} >>
     .red-envelope-container
       %img{:src => "/images/red_envelopes/red_envelope.png"}
-    .btn.btn-block.btn-primary.btn-claim{:"ng-click" => "claim()"}  领红包啦
+    .btn.btn-block.btn-primary.btn-claim{:"ng-click" => "claim()", :"ng-hide" => "alreadyClaim"}  领今天的红包
+    .btn.btn-block.btn-default.disabled{:"ng-show" => "alreadyClaim"}  已领取今天的红包
 
   .container{:"ng-show" => "shownList"}
     %h2 领到的红包:
     %ul
       %li.clearfix{:"ng-repeat" => "re in redEnvelopes"}
-        .pull-left {{date(re.created_at)}}
+        .pull-left {{re.created_at}}
         .pull-right 
           领到 
           %span.red ${{re.amount | number: 0}}

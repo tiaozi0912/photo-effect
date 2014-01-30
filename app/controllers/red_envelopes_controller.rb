@@ -1,6 +1,8 @@
 #!/bin/env ruby
 # encoding: utf-8
 
+require 'date'
+
 class RedEnvelopesController < ApplicationController
   # During the Chinese new year, Tangtang can claim red envelope here everyday
   # Game rules: 
@@ -24,17 +26,35 @@ class RedEnvelopesController < ApplicationController
 
         render :json => {
         	:red_envelopes => @re,
-        	:total => @total
+        	:total => @total,
+        	:already_claim => already_claim?
         }
 			}
 		end
 	end
 
 	def create
-    @en = RedEnvelope.create(params[:red_envelope])
-    render :json => {
-    	:red_envelope => @en.to_json
-    }
+		if already_claim?
+      render :json => {
+      	:error => true,
+      	:message => "You can't claim twice per day."
+      }
+    else 
+    	@en = RedEnvelope.create(params[:red_envelope])
+	    render :json => {
+	    	:red_envelope => @en.to_json
+	    }
+	  end
 	end
+
+	private 
+
+	def already_claim?
+    is_same_day?(RedEnvelope.first.created_at)
+	end
+
+  def is_same_day? dt
+    Time.now.localtime("-08:00").to_date === dt.to_time.localtime("-08:00").to_date
+  end
 
 end

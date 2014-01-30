@@ -3,7 +3,7 @@
 
   app.controller('ctrl', ['$scope', '$http', function($scope, $http) {
   	var settings = {
-  		max: 50,
+  		max: 30,
   		url: '/red_envelopes'
   	};
 
@@ -16,6 +16,7 @@
   		success: function(res) {
   			$scope.redEnvelopes = res.red_envelopes;
   			$scope.total = res.total;
+  			$scope.alreadyClaim = res.already_claim;
   			$scope.$apply();
   		}
   	});
@@ -34,8 +35,14 @@
           	}
           };
       $http.post(url, data).success(function(res) {
-        $scope.total += res.red_envelope.amount;
-        $scope.redEnvelopes.push(res.red_envelope);
+      	if (res.red_envelope) {
+      		$scope.total += res.red_envelope.amount;
+          $scope.redEnvelopes.push(res.red_envelope);
+          $scope.alreadyClaim = true;
+      	}else {
+      		alert(res.message);
+      	}
+        
       });
     };
 
@@ -49,7 +56,7 @@
     }
 
     $scope.date = function(unixCode) {
-      return moment(unixCode * 1000).zone("-0800").format('L');
+      return moment(unixCode * 1000).zone("-0800").format('llll');
     }
 
     //set screen height

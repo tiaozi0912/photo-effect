@@ -3,6 +3,8 @@ Me::Application.routes.draw do
     collection do 
       get 'home'
     end
+
+    resources :red_envelopes, :only => [:index]
   end
 
   root :to => 'photos#merry_christmas'

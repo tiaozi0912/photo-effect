@@ -1,0 +1,2 @@
+module RedEnvelopesHelper
+end

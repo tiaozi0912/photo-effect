@@ -1,3 +1,21 @@
+%div.page{:"ng-app" => "redEnvelopesApp", :"ng-controller" => "ctrl"}
+  .container{:"ng-hide" => "shownList"}
+    .header
+      %h2 
+        %a{:href => "#", :"ng-click" => "showList($event)"} 棠棠已经领取了：${{total | number: 0}} >>
+    .red-envelope-container
+      %img{:src => "/images/red_envelopes/red_envelope.png"}
+    .btn.btn-block.btn-primary.btn-claim{:"ng-click" => "claim()"}  领红包啦
+
+  .container{:"ng-show" => "shownList"}
+    %h2 领到的红包:
+    %ul
+      %li.clearfix{:"ng-repeat" => "re in redEnvelopes"}
+        .pull-left {{date(re.created_at)}}
+        .pull-right 
+          领到 
+          %span.red ${{re.amount | number: 0}}
+    .btn.btn-block.btn-primary{:"ng-click" => "back()"} 返回
 
 
 = javascript_include_tag 'red_envelopes'

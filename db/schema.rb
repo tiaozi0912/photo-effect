@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131211181246) do
+ActiveRecord::Schema.define(:version => 20140130054139) do
 
   create_table "photos", :force => true do |t|
     t.integer  "user_id"
@@ -26,6 +26,13 @@ ActiveRecord::Schema.define(:version => 20131211181246) do
   end
 
   add_index "photos", ["user_id", "photo_type"], :name => "index_photos_on_user_id_and_photo_type"
+
+  create_table "red_envelopes", :force => true do |t|
+    t.float    "amount"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"

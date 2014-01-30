@@ -20,3 +20,4 @@
 //= require tween.min
 //= require TrackballControls
 //= require CSS3DRenderer
+//= require moment.min

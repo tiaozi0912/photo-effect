@@ -37,9 +37,4 @@ class UsersController < ApplicationController
       render :action => :edit
     end
   end
-  
-  # For the Chinese new year
-  
-  def red_envelope
-  end
 end

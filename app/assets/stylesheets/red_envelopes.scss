@@ -28,12 +28,27 @@ $midnight-blue: #2c3e50;
 
     .red-envelope-container {
       margin: 40px 0;
+      position: relative;
 
       img {
         width: 250px;
         height: auto;
         margin-left: auto;
         margin-right: auto;
+      }
+
+      .today {
+        position: absolute;
+        top: 5%;
+        left: 0;
+        color: white;
+        font-size: 1.5em;
+        text-align: center;
+        width: 100%;
+
+        .text-big {
+          font-size: 1.5em;
+        }
       }
     }
 

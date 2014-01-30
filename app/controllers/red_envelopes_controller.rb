@@ -50,7 +50,11 @@ class RedEnvelopesController < ApplicationController
 	private 
 
 	def already_claim?
-    is_same_day?(RedEnvelope.first.created_at)
+		if RedEnvelope.first.nil?
+			return false
+		else
+      is_same_day?(RedEnvelope.first.created_at)
+    end
 	end
 
   def is_same_day? dt

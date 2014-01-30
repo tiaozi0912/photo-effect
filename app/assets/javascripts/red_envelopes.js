@@ -8,6 +8,7 @@
   	};
 
   	$scope.shownList = false;
+  	$scope.total = 0;
 
   	$.ajax({
   		url: settings.url,
@@ -56,7 +57,7 @@
     }
 
     $scope.date = function(unixCode) {
-      return moment(unixCode * 1000).zone("-0800").format('llll');
+      return moment(unixCode * 1000).zone("-0800").format('L');
     }
 
     //set screen height

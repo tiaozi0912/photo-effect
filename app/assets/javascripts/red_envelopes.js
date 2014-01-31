@@ -38,7 +38,7 @@
       $http.post(url, data).success(function(res) {
       	if (res.red_envelope) {
       		$scope.total += res.red_envelope.amount;
-          $scope.redEnvelopes.push(res.red_envelope);
+          $scope.redEnvelopes.splice(0, 0, res.red_envelope);
           $scope.alreadyClaim = true;
       	}else {
       		alert(res.message);
